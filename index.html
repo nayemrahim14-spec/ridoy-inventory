@@ -1,3810 +1,1714 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
-  >
-
-  <title>RIDOY INVENTORY</title>
-
-  <!-- Barcode Scanner -->
-  <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
-
-  <style>
-
-    * {
-      box-sizing: border-box;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    html,
-    body {
-      margin: 0;
-      padding: 0;
-      width: 100%;
-      min-height: 100%;
-      font-family:
-        Arial,
-        Helvetica,
-        sans-serif;
-      background: #f3f5f7;
-      color: #17202a;
-    }
-
-    body {
-      padding-bottom: 30px;
-    }
-
-    button,
-    input,
-    select {
-      font-family: inherit;
-    }
-
-    button {
-      cursor: pointer;
-    }
-
-
-    /* ==============================
-       HEADER
-       ============================== */
-
-    .header {
-      background:
-        linear-gradient(
-          135deg,
-          #111827,
-          #1f2937
-        );
-
-      color: white;
-
-      padding:
-        18px
-        16px
-        16px;
-
-      box-shadow:
-        0 3px 12px
-        rgba(0,0,0,.18);
-
-      position: sticky;
-      top: 0;
-      z-index: 100;
-    }
-
-    .header-title {
-      font-size: 22px;
-      font-weight: 800;
-      letter-spacing: .5px;
-    }
-
-    .header-subtitle {
-      margin-top: 4px;
-      font-size: 12px;
-      opacity: .72;
-    }
-
-
-    /* ==============================
-       CONNECTION STATUS
-       ============================== */
-
-    .status-bar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-
-      padding: 8px 14px;
-
-      background: white;
-
-      border-bottom:
-        1px solid #e5e7eb;
-
-      font-size: 12px;
-    }
-
-    .status-left {
-      display: flex;
-      align-items: center;
-      gap: 7px;
-    }
-
-    .status-dot {
-      width: 9px;
-      height: 9px;
-      border-radius: 50%;
-      background: #22c55e;
-    }
-
-    .status-dot.offline {
-      background: #ef4444;
-    }
-
-    .queue-count {
-      background: #f59e0b;
-      color: white;
-      padding: 3px 8px;
-      border-radius: 20px;
-      font-weight: 700;
-      display: none;
-    }
-
-
-    /* ==============================
-       MAIN
-       ============================== */
-
-    .container {
-      width: 100%;
-      max-width: 650px;
-      margin: auto;
-      padding: 12px;
-    }
-
-
-    /* ==============================
-       INFO CARD
-       ============================== */
-
-    .info-card {
-      background: white;
-      border-radius: 14px;
-      padding: 14px;
-      box-shadow:
-        0 2px 10px
-        rgba(0,0,0,.07);
-
-      margin-bottom: 12px;
-    }
-
-    .info-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-    }
-
-    .info-box {
-      background: #f8fafc;
-      border-radius: 10px;
-      padding: 10px;
-    }
-
-    .info-label {
-      color: #6b7280;
-      font-size: 11px;
-      margin-bottom: 4px;
-    }
-
-    .info-value {
-      font-weight: 700;
-      font-size: 14px;
-      word-break: break-word;
-    }
-
-    .change-btn {
-      margin-top: 10px;
-      width: 100%;
-      border: 0;
-      background: #eef2ff;
-      color: #3730a3;
-      padding: 11px;
-      border-radius: 9px;
-      font-weight: 700;
-    }
-
-
-    /* ==============================
-       SCANNER CARD
-       ============================== */
-
-    .scanner-card {
-      background: white;
-      border-radius: 14px;
-      padding: 12px;
-      box-shadow:
-        0 2px 10px
-        rgba(0,0,0,.07);
-
-      margin-bottom: 12px;
-    }
-
-    #reader {
-      width: 100%;
-      display: none;
-      overflow: hidden;
-      border-radius: 12px;
-      background: #000;
-    }
-
-    #reader video {
-      width: 100% !important;
-      border-radius: 12px;
-    }
-
-    .scan-btn {
-      width: 100%;
-      border: 0;
-      border-radius: 12px;
-
-      background:
-        linear-gradient(
-          135deg,
-          #16a34a,
-          #15803d
-        );
-
-      color: white;
-
-      padding: 17px;
-
-      font-size: 17px;
-      font-weight: 800;
-
-      box-shadow:
-        0 4px 10px
-        rgba(22,163,74,.25);
-    }
-
-    .scan-btn:active {
-      transform: scale(.98);
-    }
-
-    .close-camera {
-      width: 100%;
-      border: 0;
-      background: #fee2e2;
-      color: #b91c1c;
-      padding: 12px;
-      margin-top: 8px;
-      border-radius: 10px;
-      font-weight: 700;
-      display: none;
-    }
-
-
-    /* ==============================
-       SCAN RESULT
-       ============================== */
-
-    .product-card {
-      display: none;
-
-      background: #f0fdf4;
-      border: 1px solid #bbf7d0;
-
-      border-radius: 12px;
-
-      padding: 13px;
-
-      margin-top: 10px;
-    }
-
-    .product-title {
-      font-size: 16px;
-      font-weight: 800;
-      color: #166534;
-    }
-
-    .product-code {
-      font-size: 12px;
-      color: #64748b;
-      margin-top: 4px;
-    }
-
-    .barcode-text {
-      font-size: 12px;
-      color: #475569;
-      margin-top: 4px;
-    }
-
-
-    /* ==============================
-       QUANTITY
-       ============================== */
-
-    .qty-section {
-      display: none;
-      margin-top: 12px;
-    }
-
-    .qty-label {
-      font-size: 13px;
-      font-weight: 700;
-      margin-bottom: 6px;
-    }
-
-    .qty-row {
-      display: flex;
-      gap: 8px;
-    }
-
-    #qtyInput {
-      flex: 1;
-
-      border:
-        2px solid #d1d5db;
-
-      border-radius: 10px;
-
-      padding: 14px;
-
-      font-size: 20px;
-      font-weight: 800;
-
-      text-align: center;
-
-      outline: none;
-    }
-
-    #qtyInput:focus {
-      border-color: #2563eb;
-    }
-
-    .save-btn {
-      min-width: 115px;
-
-      border: 0;
-
-      border-radius: 10px;
-
-      background: #2563eb;
-
-      color: white;
-
-      font-size: 15px;
-      font-weight: 800;
-    }
-
-
-    /* ==============================
-       RECENT COUNTS
-       ============================== */
-
-    .section-card {
-      background: white;
-      border-radius: 14px;
-      padding: 13px;
-
-      box-shadow:
-        0 2px 10px
-        rgba(0,0,0,.07);
-
-      margin-bottom: 12px;
-    }
-
-    .section-title {
-      font-size: 16px;
-      font-weight: 800;
-      margin-bottom: 10px;
-
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .recent-list {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .recent-item {
-      border:
-        1px solid #e5e7eb;
-
-      border-radius: 10px;
-
-      padding: 10px;
-
-      background: #fafafa;
-    }
-
-    .recent-main {
-      display: flex;
-      justify-content: space-between;
-      gap: 10px;
-    }
-
-    .recent-name {
-      font-size: 14px;
-      font-weight: 700;
-    }
-
-    .recent-code {
-      font-size: 11px;
-      color: #64748b;
-      margin-top: 3px;
-    }
-
-    .recent-qty {
-      font-size: 18px;
-      font-weight: 900;
-      color: #166534;
-      white-space: nowrap;
-    }
-
-    .recent-meta {
-      display: flex;
-      justify-content: space-between;
-
-      margin-top: 7px;
-
-      font-size: 10px;
-      color: #64748b;
-    }
-
-    .edit-btn {
-      border: 0;
-      background: #e0e7ff;
-      color: #3730a3;
-      padding: 5px 9px;
-      border-radius: 6px;
-      font-size: 11px;
-      font-weight: 700;
-    }
-
-
-    /* ==============================
-       SUMMARY
-       ============================== */
-
-    .summary-btn {
-      width: 100%;
-
-      border: 0;
-
-      border-radius: 10px;
-
-      background: #111827;
-
-      color: white;
-
-      padding: 13px;
-
-      font-weight: 800;
-
-      margin-top: 8px;
-    }
-
-    .summary-panel {
-      display: none;
-
-      margin-top: 10px;
-    }
-
-    .summary-row {
-      display: flex;
-      justify-content: space-between;
-
-      padding: 9px 0;
-
-      border-bottom:
-        1px solid #e5e7eb;
-    }
-
-    .summary-name {
-      font-size: 13px;
-      font-weight: 700;
-    }
-
-    .summary-qty {
-      font-weight: 900;
-    }
-
-
-    /* ==============================
-       MODAL
-       ============================== */
-
-    .modal {
-      position: fixed;
-      inset: 0;
-
-      background:
-        rgba(0,0,0,.55);
-
-      display: none;
-
-      align-items: center;
-      justify-content: center;
-
-      z-index: 999;
-    }
-
-    .modal-box {
-      width: calc(100% - 28px);
-      max-width: 430px;
-
-      background: white;
-
-      border-radius: 16px;
-
-      padding: 18px;
-
-      box-shadow:
-        0 15px 50px
-        rgba(0,0,0,.25);
-    }
-
-    .modal-title {
-      font-size: 18px;
-      font-weight: 800;
-      margin-bottom: 15px;
-    }
-
-    .field {
-      margin-bottom: 12px;
-    }
-
-    .field label {
-      display: block;
-      font-size: 12px;
-      color: #64748b;
-      margin-bottom: 5px;
-    }
-
-    .field select,
-    .field input {
-      width: 100%;
-
-      padding: 12px;
-
-      border:
-        1px solid #d1d5db;
-
-      border-radius: 9px;
-
-      font-size: 14px;
-
-      background: white;
-    }
-
-    .modal-buttons {
-      display: flex;
-      gap: 8px;
-      margin-top: 15px;
-    }
-
-    .modal-buttons button {
-      flex: 1;
-
-      border: 0;
-
-      padding: 12px;
-
-      border-radius: 9px;
-
-      font-weight: 800;
-    }
-
-    .cancel-btn {
-      background: #e5e7eb;
-      color: #374151;
-    }
-
-    .apply-btn {
-      background: #2563eb;
-      color: white;
-    }
-
-
-    /* ==============================
-       TOAST
-       ============================== */
-
-    #toast {
-      position: fixed;
-
-      left: 50%;
-      bottom: 25px;
-
-      transform:
-        translateX(-50%)
-        translateY(100px);
-
-      background: #111827;
-
-      color: white;
-
-      padding: 12px 17px;
-
-      border-radius: 10px;
-
-      font-size: 13px;
-
-      font-weight: 700;
-
-      z-index: 2000;
-
-      opacity: 0;
-
-      transition: .25s;
-
-      max-width: 90%;
-
-      text-align: center;
-    }
-
-    #toast.show {
-      opacity: 1;
-
-      transform:
-        translateX(-50%)
-        translateY(0);
-    }
-
-
-    /* ==============================
-       LOADING
-       ============================== */
-
-    .loading {
-      display: none;
-
-      position: fixed;
-
-      inset: 0;
-
-      background:
-        rgba(255,255,255,.7);
-
-      z-index: 1500;
-
-      align-items: center;
-      justify-content: center;
-    }
-
-    .loading-box {
-      background: white;
-
-      padding: 20px 25px;
-
-      border-radius: 12px;
-
-      box-shadow:
-        0 10px 30px
-        rgba(0,0,0,.15);
-
-      font-weight: 700;
-    }
-
-
-    /* ==============================
-       EMPTY
-       ============================== */
-
-    .empty {
-      text-align: center;
-
-      padding: 20px;
-
-      color: #94a3b8;
-
-      font-size: 13px;
-    }
-
-
-    /* ==============================
-       RESPONSIVE
-       ============================== */
-
-    @media (max-width: 420px) {
-
-      .info-grid {
-        grid-template-columns: 1fr 1fr;
-      }
-
-      .header-title {
-        font-size: 20px;
-      }
-
-      .scan-btn {
-        padding: 16px;
-      }
-    }
-
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0,
+               maximum-scale=1.0, user-scalable=no">
+
+<title>RIDOY INVENTORY</title>
+
+<script src="https://unpkg.com/html5-qrcode"></script>
+
+<style>
+*{
+  box-sizing:border-box;
+}
+
+body{
+  margin:0;
+  font-family:Arial,Helvetica,sans-serif;
+  background:#f4f6f8;
+  color:#222;
+}
+
+.header{
+  background:#111;
+  color:#fff;
+  padding:18px 15px;
+  text-align:center;
+  font-size:23px;
+  font-weight:bold;
+}
+
+.container{
+  max-width:600px;
+  margin:auto;
+  padding:15px;
+}
+
+.card{
+  background:#fff;
+  border-radius:14px;
+  padding:15px;
+  margin-bottom:14px;
+  box-shadow:0 3px 12px rgba(0,0,0,.08);
+}
+
+label{
+  display:block;
+  font-size:13px;
+  font-weight:bold;
+  margin-bottom:6px;
+}
+
+select,
+input{
+  width:100%;
+  padding:13px;
+  border:1px solid #ccc;
+  border-radius:9px;
+  font-size:16px;
+  background:#fff;
+}
+
+.row{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+}
+
+button{
+  width:100%;
+  border:0;
+  border-radius:10px;
+  padding:14px;
+  font-size:16px;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+.btn-scan{
+  background:#198754;
+  color:white;
+  font-size:18px;
+  margin-top:10px;
+}
+
+.btn-close{
+  background:#dc3545;
+  color:#fff;
+  margin-top:10px;
+}
+
+.btn-save{
+  background:#0d6efd;
+  color:#fff;
+  margin-top:10px;
+}
+
+.btn-secondary{
+  background:#6c757d;
+  color:#fff;
+  margin-top:8px;
+}
+
+.status{
+  padding:10px;
+  border-radius:8px;
+  margin-bottom:12px;
+  font-size:14px;
+  display:none;
+}
+
+.status.success{
+  display:block;
+  background:#d1e7dd;
+  color:#0f5132;
+}
+
+.status.error{
+  display:block;
+  background:#f8d7da;
+  color:#842029;
+}
+
+.status.info{
+  display:block;
+  background:#cff4fc;
+  color:#055160;
+}
+
+#reader{
+  width:100%;
+  overflow:hidden;
+  border-radius:12px;
+  margin-top:10px;
+  display:none;
+}
+
+.product{
+  margin-top:12px;
+  padding:14px;
+  border-radius:10px;
+  background:#f1f3f5;
+  display:none;
+}
+
+.product strong{
+  display:block;
+  font-size:18px;
+  margin-bottom:5px;
+}
+
+.barcode{
+  font-family:monospace;
+  font-size:14px;
+}
+
+.recent-item{
+  border-bottom:1px solid #eee;
+  padding:12px 0;
+}
+
+.recent-item:last-child{
+  border-bottom:0;
+}
+
+.recent-title{
+  font-weight:bold;
+}
+
+.recent-meta{
+  font-size:13px;
+  color:#666;
+  margin-top:4px;
+}
+
+.qty-box{
+  margin-top:12px;
+  display:none;
+}
+
+.loading{
+  text-align:center;
+  padding:20px;
+  color:#666;
+}
+
+.small{
+  font-size:12px;
+  color:#777;
+}
+
+.hidden{
+  display:none!important;
+}
+
+.summary-box{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin-top:10px;
+}
+
+.stat{
+  background:#f1f3f5;
+  padding:15px;
+  border-radius:10px;
+  text-align:center;
+}
+
+.stat-number{
+  font-size:25px;
+  font-weight:bold;
+}
+
+.modal{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.6);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:15px;
+  z-index:9999;
+}
+
+.modal-box{
+  width:100%;
+  max-width:450px;
+  background:white;
+  border-radius:14px;
+  padding:18px;
+}
+
+.modal-title{
+  font-size:20px;
+  font-weight:bold;
+  margin-bottom:15px;
+}
+</style>
 </head>
-
 
 <body>
 
+<div class="header">
+  RIDOY INVENTORY
+</div>
 
-  <!-- ==========================================
-       HEADER
-       ========================================== -->
+<div class="container">
 
-  <div class="header">
+  <div id="status" class="status"></div>
 
-    <div class="header-title">
-      RIDOY INVENTORY
+  <!-- SETTINGS -->
+  <div class="card">
+
+    <div class="row">
+
+      <div>
+        <label>Location</label>
+
+        <select id="location">
+          <option value="">Loading...</option>
+        </select>
+      </div>
+
+      <div>
+        <label>Employee</label>
+
+        <select id="employee">
+          <option value="">Loading...</option>
+        </select>
+      </div>
+
     </div>
 
-    <div class="header-subtitle">
-      Fast Barcode Stock Counting System
+    <div style="margin-top:10px;">
+      <label>Date</label>
+
+      <input type="date" id="date">
     </div>
 
   </div>
 
 
-  <!-- ==========================================
-       CONNECTION STATUS
-       ========================================== -->
+  <!-- SCANNER -->
+  <div class="card">
 
-  <div class="status-bar">
+    <button
+      id="scanBtn"
+      class="btn-scan"
+      onclick="startScanner()">
 
-    <div class="status-left">
+      📷 SCAN BARCODE
 
-      <span
-        id="statusDot"
-        class="status-dot"
-      ></span>
+    </button>
 
-      <span id="statusText">
-        Checking connection...
-      </span>
+    <div id="reader"></div>
 
-    </div>
+    <button
+      id="closeBtn"
+      class="btn-close hidden"
+      onclick="stopScanner()">
 
+      CLOSE CAMERA
 
-    <span
-      id="queueCount"
-      class="queue-count"
-    >
-      0 pending
-    </span>
+    </button>
 
   </div>
 
 
-  <!-- ==========================================
-       MAIN
-       ========================================== -->
+  <!-- PRODUCT -->
+  <div class="card">
 
-  <div class="container">
+    <div id="productBox" class="product">
 
+      <strong id="productName">
+        Product
+      </strong>
 
-    <!-- ========================================
-         INFO
-         ======================================== -->
+      <div class="barcode">
+        Barcode:
+        <span id="productBarcode"></span>
+      </div>
 
-    <div class="info-card">
+      <div>
+        Product Code:
+        <span id="productCode"></span>
+      </div>
 
-      <div class="info-grid">
+      <div>
+        Price:
+        <span id="productPrice"></span>
+      </div>
 
-        <div class="info-box">
-
-          <div class="info-label">
-            LOCATION
-          </div>
-
-          <div
-            id="locationDisplay"
-            class="info-value"
-          >
-            Loading...
-          </div>
-
-        </div>
+    </div>
 
 
-        <div class="info-box">
+    <div id="qtyBox" class="qty-box">
 
-          <div class="info-label">
-            EMPLOYEE
-          </div>
+      <label>Quantity</label>
 
-          <div
-            id="employeeDisplay"
-            class="info-value"
-          >
-            Loading...
-          </div>
+      <input
+        id="qty"
+        type="number"
+        min="1"
+        value="1"
+        inputmode="numeric">
 
-        </div>
+      <button
+        class="btn-save"
+        onclick="saveCurrentCount()">
 
+        💾 SAVE COUNT
 
-        <div class="info-box">
+      </button>
 
-          <div class="info-label">
-            DATE
-          </div>
+    </div>
 
-          <div
-            id="dateDisplay"
-            class="info-value"
-          >
-            -
-          </div>
-
-        </div>
+  </div>
 
 
-        <div class="info-box">
+  <!-- RECENT -->
+  <div class="card">
 
-          <div class="info-label">
-            TOTAL COUNT
-          </div>
+    <h3>Recent Counts</h3>
 
-          <div
-            id="totalQtyDisplay"
-            class="info-value"
-          >
+    <div id="recent">
+      <div class="loading">
+        No counts yet.
+      </div>
+    </div>
+
+  </div>
+
+
+  <!-- SUMMARY -->
+  <div class="card">
+
+    <button
+      class="btn-secondary"
+      onclick="loadSummary()">
+
+      📊 VIEW SUMMARY
+
+    </button>
+
+    <div id="summary" class="hidden">
+
+      <div class="summary-box">
+
+        <div class="stat">
+          <div class="stat-number" id="totalProducts">
             0
           </div>
+          <div>Products</div>
+        </div>
 
+        <div class="stat">
+          <div class="stat-number" id="totalQty">
+            0
+          </div>
+          <div>Total Qty</div>
         </div>
 
       </div>
 
-
-      <button
-        class="change-btn"
-        onclick="openSettings()"
-      >
-        ⚙️ Change Location / Employee
-      </button>
-
-    </div>
-
-
-    <!-- ========================================
-         SCANNER
-         ======================================== -->
-
-    <div class="scanner-card">
-
-
-      <button
-        id="scanButton"
-        class="scan-btn"
-        onclick="startScanner()"
-      >
-        📷 SCAN BARCODE
-      </button>
-
-
-      <div id="reader"></div>
-
-
-      <button
-        id="closeCameraButton"
-        class="close-camera"
-        onclick="stopScanner()"
-      >
-        ✕ CLOSE CAMERA
-      </button>
-
-
-      <!-- PRODUCT RESULT -->
-
-      <div
-        id="productCard"
-        class="product-card"
-      >
-
-        <div
-          id="productTitle"
-          class="product-title"
-        >
-          Product
-        </div>
-
-        <div
-          id="productCode"
-          class="product-code"
-        >
-          Product Code
-        </div>
-
-        <div
-          id="barcodeText"
-          class="barcode-text"
-        >
-          Barcode
-        </div>
-
-      </div>
-
-
-      <!-- QUANTITY -->
-
-      <div
-        id="qtySection"
-        class="qty-section"
-      >
-
-        <div class="qty-label">
-          Enter Quantity
-        </div>
-
-        <div class="qty-row">
-
-          <input
-            id="qtyInput"
-            type="number"
-            min="1"
-            step="1"
-            value="1"
-            inputmode="numeric"
-            placeholder="Qty"
-          >
-
-          <button
-            class="save-btn"
-            onclick="saveCurrentCount()"
-          >
-            SAVE
-          </button>
-
-        </div>
-
-      </div>
-
-    </div>
-
-
-    <!-- ========================================
-         RECENT COUNTS
-         ======================================== -->
-
-    <div class="section-card">
-
-      <div class="section-title">
-
-        <span>
-          Recent Counts
-        </span>
-
-        <span
-          id="recentCountNumber"
-          style="
-            color:#64748b;
-            font-size:12px;
-          "
-        >
-          0
-        </span>
-
-      </div>
-
-
-      <div
-        id="recentList"
-        class="recent-list"
-      >
-
-        <div class="empty">
-          No counts yet.
-        </div>
-
-      </div>
-
-
-      <button
-        class="summary-btn"
-        onclick="toggleSummary()"
-      >
-        📊 VIEW SUMMARY
-      </button>
-
-
-      <div
-        id="summaryPanel"
-        class="summary-panel"
-      >
-
-        <div
-          id="summaryList"
-        ></div>
-
-      </div>
-
-    </div>
-
-
-  </div>
-
-
-  <!-- ==========================================
-       SETTINGS MODAL
-       ========================================== -->
-
-  <div
-    id="settingsModal"
-    class="modal"
-  >
-
-    <div class="modal-box">
-
-      <div class="modal-title">
-        Inventory Settings
-      </div>
-
-
-      <div class="field">
-
-        <label>
-          Location
-        </label>
-
-        <select id="locationSelect">
-
-          <option value="">
-            Select Location
-          </option>
-
-        </select>
-
-      </div>
-
-
-      <div class="field">
-
-        <label>
-          Employee
-        </label>
-
-        <select id="employeeSelect">
-
-          <option value="">
-            Select Employee
-          </option>
-
-        </select>
-
-      </div>
-
-
-      <div class="field">
-
-        <label>
-          Date
-        </label>
-
-        <input
-          id="dateInput"
-          type="date"
-        >
-
-      </div>
-
-
-      <div class="modal-buttons">
-
-        <button
-          class="cancel-btn"
-          onclick="closeSettings()"
-        >
-          CANCEL
-        </button>
-
-        <button
-          class="apply-btn"
-          onclick="applySettings()"
-        >
-          SAVE
-        </button>
-
+      <div id="summaryList"
+           style="margin-top:12px;">
       </div>
 
     </div>
 
   </div>
 
-
-  <!-- ==========================================
-       EDIT MODAL
-       ========================================== -->
-
-  <div
-    id="editModal"
-    class="modal"
-  >
-
-    <div class="modal-box">
-
-      <div class="modal-title">
-        Edit Quantity
-      </div>
+</div>
 
 
-      <div
-        id="editProductName"
-        style="
-          font-weight:700;
-          margin-bottom:12px;
-        "
-      >
-        Product
-      </div>
+<!-- EDIT MODAL -->
 
+<div id="editModal" class="modal">
 
-      <div class="field">
+  <div class="modal-box">
 
-        <label>
-          New Quantity
-        </label>
-
-        <input
-          id="editQtyInput"
-          type="number"
-          min="1"
-          step="1"
-          inputmode="numeric"
-        >
-
-      </div>
-
-
-      <div class="modal-buttons">
-
-        <button
-          class="cancel-btn"
-          onclick="closeEditModal()"
-        >
-          CANCEL
-        </button>
-
-        <button
-          class="apply-btn"
-          onclick="saveEdit()"
-        >
-          UPDATE
-        </button>
-
-      </div>
-
+    <div class="modal-title">
+      Edit Quantity
     </div>
+
+    <div id="editProduct"
+         style="margin-bottom:12px;">
+    </div>
+
+    <input
+      type="number"
+      id="editQty"
+      min="1"
+      inputmode="numeric">
+
+    <button
+      class="btn-save"
+      onclick="saveEdit()">
+
+      SAVE EDIT
+
+    </button>
+
+    <button
+      class="btn-secondary"
+      onclick="closeEdit()">
+
+      CANCEL
+
+    </button>
 
   </div>
 
-
-  <!-- ==========================================
-       LOADING
-       ========================================== -->
-
-  <div
-    id="loading"
-    class="loading"
-  >
-
-    <div class="loading-box">
-      Please wait...
-    </div>
-
-  </div>
-
-
-  <!-- ==========================================
-       TOAST
-       ========================================== -->
-
-  <div id="toast"></div>
+</div>
 
 
 <script>
 
-
-/********************************************************
- * IMPORTANT
- *
- * এখানে আপনার Apps Script Web App URL বসাবেন।
- *
- * Example:
- *
- * https://script.google.com/macros/s/XXXXXXXX/exec
- ********************************************************/
+/****************************************************
+ * CONFIG
+ ****************************************************/
 
 const API_URL =
-  "https://script.google.com/macros/s/AKfycby0IWC0aq2QkCsS54ztJU_NEzryyrs9i6BRQEBou0eHBpQltzg_TQXh7WcXX4QrWH8e0w/exec";
+"https://script.google.com/macros/s/AKfycby0IWC0aq2QkCsS54ztJU_NEzryyrs9i6BRQEBou0eHBpQltzg_TQXh7WcXX4QrWH8e0w/exec";
 
 
-/********************************************************
- * APP STATE
- ********************************************************/
+/****************************************************
+ * GLOBAL
+ ****************************************************/
+
+let products = [];
+
+let currentProduct = null;
 
 let scanner = null;
 
 let scannerRunning = false;
 
-let currentBarcode = "";
+let currentEditId = null;
 
-let currentProduct = null;
-
-let records = [];
-
-let products = [];
-
-let employees = [];
-
-let locations = [];
-
-let editingRecordId = null;
-
-let saving = false;
+let recentRecords = [];
 
 
-/********************************************************
- * LOCAL STORAGE KEYS
- ********************************************************/
+/****************************************************
+ * DOM
+ ****************************************************/
 
-const STORAGE = {
+const locationSelect =
+document.getElementById("location");
 
-  location:
-    "ridoy_inventory_location",
+const employeeSelect =
+document.getElementById("employee");
 
-  employee:
-    "ridoy_inventory_employee",
-
-  date:
-    "ridoy_inventory_date",
-
-  queue:
-    "ridoy_inventory_queue",
-
-  device:
-    "ridoy_inventory_device"
-
-};
+const dateInput =
+document.getElementById("date");
 
 
-/********************************************************
+/****************************************************
+ * DATE
+ ****************************************************/
+
+function today(){
+
+  const d = new Date();
+
+  const y = d.getFullYear();
+
+  const m =
+    String(d.getMonth()+1)
+    .padStart(2,"0");
+
+  const day =
+    String(d.getDate())
+    .padStart(2,"0");
+
+  return `${y}-${m}-${day}`;
+}
+
+dateInput.value = today();
+
+
+/****************************************************
+ * STATUS
+ ****************************************************/
+
+function showStatus(message,type="info"){
+
+  const el =
+    document.getElementById("status");
+
+  el.textContent = message;
+
+  el.className =
+    "status " + type;
+
+}
+
+
+/****************************************************
  * DEVICE ID
- ********************************************************/
+ ****************************************************/
 
-function getDeviceId() {
+function getDeviceId(){
 
   let id =
-    localStorage.getItem(
-      STORAGE.device
-    );
+    localStorage.getItem("ridoy_device_id");
 
-  if (!id) {
+  if(!id){
 
     id =
-      "DEV_" +
+      "DEV-" +
       Date.now() +
-      "_" +
+      "-" +
       Math.random()
         .toString(36)
-        .substring(2, 8);
+        .substring(2,8);
 
     localStorage.setItem(
-      STORAGE.device,
+      "ridoy_device_id",
       id
     );
+
   }
 
   return id;
 }
 
 
-/********************************************************
- * TODAY
- ********************************************************/
+/****************************************************
+ * JSONP API
+ ****************************************************/
 
-function todayKey() {
+function api(action,payload={}){
 
-  const d = new Date();
+  return new Promise((resolve,reject)=>{
 
-  const y =
-    d.getFullYear();
+    const callbackName =
+      "ridoyCallback_" +
+      Date.now() +
+      "_" +
+      Math.random()
+        .toString(36)
+        .substring(2,8);
 
-  const m =
-    String(d.getMonth() + 1)
-      .padStart(2, "0");
+    const script =
+      document.createElement("script");
 
-  const day =
-    String(d.getDate())
-      .padStart(2, "0");
+    const callback =
+      encodeURIComponent(callbackName);
 
-  return `${y}-${m}-${day}`;
+    const actionParam =
+      encodeURIComponent(action);
+
+    const payloadParam =
+      encodeURIComponent(
+        JSON.stringify(payload)
+      );
+
+    const url =
+      API_URL +
+      "?action=" +
+      actionParam +
+      "&payload=" +
+      payloadParam +
+      "&callback=" +
+      callback;
+
+    window[callbackName] =
+      function(response){
+
+        cleanup();
+
+        if(response && response.ok){
+
+          resolve(response.data);
+
+        }else{
+
+          reject(
+            new Error(
+              response?.error ||
+              "API Error"
+            )
+          );
+
+        }
+
+      };
+
+    script.onerror =
+      function(){
+
+        cleanup();
+
+        reject(
+          new Error(
+            "API connection failed"
+          )
+        );
+
+      };
+
+    script.src = url;
+
+    document.body.appendChild(script);
+
+
+    function cleanup(){
+
+      try{
+        script.remove();
+      }catch(e){}
+
+      try{
+        delete window[callbackName];
+      }catch(e){}
+
+    }
+
+  });
+
 }
 
 
-/********************************************************
- * INITIALIZATION
- ********************************************************/
+/****************************************************
+ * LOAD INITIAL DATA
+ ****************************************************/
 
-document.addEventListener(
-  "DOMContentLoaded",
-  async function() {
+async function loadInitialData(){
 
-    document
-      .getElementById("dateInput")
-      .value =
+  showStatus(
+    "Loading data...",
+    "info"
+  );
+
+  try{
+
+    const results =
+      await Promise.all([
+        api("locations"),
+        api("employees"),
+        api("products")
+      ]);
+
+    const locations =
+      results[0];
+
+    const employees =
+      results[1];
+
+    products =
+      results[2] || [];
+
+
+    populateLocations(locations);
+
+    populateEmployees(employees);
+
+
+    // restore previous selection
+
+    const savedLocation =
       localStorage.getItem(
-        STORAGE.date
-      ) || todayKey();
+        "ridoy_location"
+      );
+
+    const savedEmployee =
+      localStorage.getItem(
+        "ridoy_employee"
+      );
 
 
-    loadLocalSettings();
+    if(savedLocation &&
+       [...locationSelect.options]
+       .some(o=>o.value===savedLocation)){
 
-    updateConnectionStatus();
+      locationSelect.value =
+        savedLocation;
 
-    updateQueueDisplay();
+    }
 
-    await loadMasterData();
 
-    await loadRecords();
+    if(savedEmployee &&
+       [...employeeSelect.options]
+       .some(o=>o.value===savedEmployee)){
 
-    startAutoSync();
+      employeeSelect.value =
+        savedEmployee;
 
-    setInterval(
-      updateConnectionStatus,
-      5000
+    }
+
+
+    showStatus(
+      "System ready.",
+      "success"
     );
 
-    setInterval(
-      flushQueue,
-      5000
+
+    loadRecent();
+
+  }catch(err){
+
+    console.error(err);
+
+    showStatus(
+      "Data load failed: " +
+      err.message,
+      "error"
     );
+
+  }
+
+}
+
+
+/****************************************************
+ * LOCATIONS
+ ****************************************************/
+
+function populateLocations(list){
+
+  locationSelect.innerHTML =
+    '<option value="">Select Location</option>';
+
+  (list || []).forEach(location=>{
+
+    const option =
+      document.createElement("option");
+
+    option.value = location;
+
+    option.textContent = location;
+
+    locationSelect.appendChild(
+      option
+    );
+
+  });
+
+}
+
+
+/****************************************************
+ * EMPLOYEES
+ ****************************************************/
+
+function populateEmployees(list){
+
+  employeeSelect.innerHTML =
+    '<option value="">Select Employee</option>';
+
+  (list || []).forEach(emp=>{
+
+    const option =
+      document.createElement("option");
+
+    option.value = emp.name;
+
+    option.textContent =
+      emp.name;
+
+    employeeSelect.appendChild(
+      option
+    );
+
+  });
+
+}
+
+
+/****************************************************
+ * SAVE SETTINGS
+ ****************************************************/
+
+locationSelect.addEventListener(
+  "change",
+  ()=>{
+
+    localStorage.setItem(
+      "ridoy_location",
+      locationSelect.value
+    );
+
+    loadRecent();
 
   }
 );
 
 
-/********************************************************
- * LOAD SETTINGS
- ********************************************************/
+employeeSelect.addEventListener(
+  "change",
+  ()=>{
 
-function loadLocalSettings() {
-
-  const location =
-    localStorage.getItem(
-      STORAGE.location
+    localStorage.setItem(
+      "ridoy_employee",
+      employeeSelect.value
     );
 
-  const employee =
-    localStorage.getItem(
-      STORAGE.employee
+    loadRecent();
+
+  }
+);
+
+
+dateInput.addEventListener(
+  "change",
+  loadRecent
+);
+
+
+/****************************************************
+ * START SCANNER
+ ****************************************************/
+
+async function startScanner(){
+
+  if(scannerRunning)
+    return;
+
+  if(!locationSelect.value){
+
+    showStatus(
+      "Please select Location first.",
+      "error"
     );
 
-  const date =
-    localStorage.getItem(
-      STORAGE.date
-    ) || todayKey();
-
-
-  if (location) {
-
-    document
-      .getElementById(
-        "locationDisplay"
-      )
-      .textContent =
-      location;
-  }
-  else {
-
-    document
-      .getElementById(
-        "locationDisplay"
-      )
-      .textContent =
-      "Not selected";
+    return;
   }
 
-
-  if (employee) {
-
-    document
-      .getElementById(
-        "employeeDisplay"
-      )
-      .textContent =
-      employee;
-  }
-  else {
-
-    document
-      .getElementById(
-        "employeeDisplay"
-      )
-      .textContent =
-      "Not selected";
-  }
-
-
-  document
-    .getElementById(
-      "dateDisplay"
-    )
-    .textContent =
-    date;
-
-}
-
-
-/********************************************************
- * LOAD MASTER DATA
- ********************************************************/
-
-async function loadMasterData() {
-
-  try {
-
-    showLoading(true);
-
-
-    const [
-      productData,
-      employeeData,
-      locationData
-    ] =
-      await Promise.all([
-
-        apiGet(
-          "products"
-        ),
-
-        apiGet(
-          "employees"
-        ),
-
-        apiGet(
-          "locations"
-        )
-
-      ]);
-
-
-    products =
-      Array.isArray(productData)
-        ? productData
-        : [];
-
-
-    employees =
-      Array.isArray(employeeData)
-        ? employeeData
-        : [];
-
-
-    locations =
-      Array.isArray(locationData)
-        ? locationData
-        : [];
-
-
-    populateSettings();
-
-
-    showLoading(false);
-
-
-  } catch (err) {
-
-    showLoading(false);
-
-    console.error(err);
-
-    showToast(
-      "Master data load হয়নি। Internet/API check করুন।"
-    );
-
-  }
-
-}
-
-
-/********************************************************
- * POPULATE SETTINGS
- ********************************************************/
-
-function populateSettings() {
-
-  const locationSelect =
-    document.getElementById(
-      "locationSelect"
-    );
-
-  const employeeSelect =
-    document.getElementById(
-      "employeeSelect"
-    );
-
-
-  locationSelect.innerHTML =
-    '<option value="">Select Location</option>';
-
-
-  locations.forEach(
-    function(location) {
-
-      const option =
-        document.createElement(
-          "option"
-        );
-
-      option.value =
-        location;
-
-      option.textContent =
-        location;
-
-      locationSelect.appendChild(
-        option
-      );
-
-    }
-  );
-
-
-  employeeSelect.innerHTML =
-    '<option value="">Select Employee</option>';
-
-
-  employees.forEach(
-    function(employee) {
-
-      const option =
-        document.createElement(
-          "option"
-        );
-
-      option.value =
-        employee.name;
-
-      option.textContent =
-        employee.name;
-
-      employeeSelect.appendChild(
-        option
-      );
-
-    }
-  );
-
-
-  const savedLocation =
-    localStorage.getItem(
-      STORAGE.location
-    );
-
-  const savedEmployee =
-    localStorage.getItem(
-      STORAGE.employee
-    );
-
-  const savedDate =
-    localStorage.getItem(
-      STORAGE.date
-    ) || todayKey();
-
-
-  if (savedLocation) {
-
-    locationSelect.value =
-      savedLocation;
-  }
-
-
-  if (savedEmployee) {
-
-    employeeSelect.value =
-      savedEmployee;
-  }
-
-
-  document
-    .getElementById(
-      "dateInput"
-    )
-    .value =
-    savedDate;
-
-}
-
-
-/********************************************************
- * SETTINGS
- ********************************************************/
-
-function openSettings() {
-
-  populateSettings();
-
-  document
-    .getElementById(
-      "settingsModal"
-    )
-    .style.display =
-    "flex";
-}
-
-
-function closeSettings() {
-
-  document
-    .getElementById(
-      "settingsModal"
-    )
-    .style.display =
-    "none";
-}
-
-
-function applySettings() {
-
-  const location =
-    document
-      .getElementById(
-        "locationSelect"
-      )
-      .value
-      .trim();
-
-
-  const employee =
-    document
-      .getElementById(
-        "employeeSelect"
-      )
-      .value
-      .trim();
-
-
-  const date =
-    document
-      .getElementById(
-        "dateInput"
-      )
-      .value;
-
-
-  if (!location) {
-
-    showToast(
-      "Location select করুন"
+  if(!employeeSelect.value){
+
+    showStatus(
+      "Please select Employee first.",
+      "error"
     );
 
     return;
   }
 
 
-  if (!employee) {
+  document.getElementById(
+    "reader"
+  ).style.display = "block";
 
-    showToast(
-      "Employee select করুন"
-    );
+  document.getElementById(
+    "closeBtn"
+  ).classList.remove("hidden");
 
-    return;
-  }
 
+  scanner =
+    new Html5Qrcode("reader");
 
-  if (!date) {
 
-    showToast(
-      "Date select করুন"
-    );
-
-    return;
-  }
-
-
-  localStorage.setItem(
-    STORAGE.location,
-    location
-  );
-
-  localStorage.setItem(
-    STORAGE.employee,
-    employee
-  );
-
-  localStorage.setItem(
-    STORAGE.date,
-    date
-  );
-
-
-  loadLocalSettings();
-
-  closeSettings();
-
-  loadRecords();
-
-  showToast(
-    "Settings saved"
-  );
-
-}
-
-
-/********************************************************
- * API GET
- *
- * JSONP style request
- ********************************************************/
-
-function apiGet(
-  action,
-  payload = {}
-) {
-
-  return new Promise(
-    function(resolve, reject) {
-
-      const callbackName =
-        "jsonp_" +
-        Date.now() +
-        "_" +
-        Math.random()
-          .toString(36)
-          .substring(2, 7);
-
-
-      const script =
-        document.createElement(
-          "script"
-        );
-
-
-      const timer =
-        setTimeout(
-          function() {
-
-            cleanup();
-
-            reject(
-              new Error(
-                "API timeout"
-              )
-            );
-
-          },
-          15000
-        );
-
-
-      window[callbackName] =
-        function(result) {
-
-          clearTimeout(timer);
-
-          cleanup();
-
-
-          if (
-            result &&
-            result.ok === true
-          ) {
-
-            resolve(
-              result.data
-            );
-
-          }
-          else {
-
-            reject(
-              new Error(
-                result?.error ||
-                "API Error"
-              )
-            );
-
-          }
-
-        };
-
-
-      function cleanup() {
-
-        delete window[
-          callbackName
-        ];
-
-        if (script.parentNode) {
-
-          script.parentNode.removeChild(
-            script
-          );
-
-        }
-
-      }
-
-
-      const params =
-        new URLSearchParams();
-
-
-      params.set(
-        "action",
-        action
-      );
-
-
-      params.set(
-        "payload",
-        JSON.stringify(
-          payload
-        )
-      );
-
-
-      /*
-       * JSONP callback
-       */
-
-      params.set(
-        "callback",
-        callbackName
-      );
-
-
-      script.src =
-        API_URL +
-        "?" +
-        params.toString();
-
-
-      script.onerror =
-        function() {
-
-          clearTimeout(timer);
-
-          cleanup();
-
-          reject(
-            new Error(
-              "Network error"
-            )
-          );
-
-        };
-
-
-      document.body.appendChild(
-        script
-      );
-
-    }
-  );
-
-}
-
-
-/********************************************************
- * NOTE
- *
- * Apps Script backend currently returns JSON,
- * not traditional JSONP.
- *
- * Therefore direct API requests are handled below
- * with a normal script request fallback.
- ********************************************************/
-
-
-async function apiRequest(
-  action,
-  payload = {}
-) {
-
-  try {
-
-    const url =
-      API_URL +
-      "?action=" +
-      encodeURIComponent(
-        action
-      ) +
-      "&payload=" +
-      encodeURIComponent(
-        JSON.stringify(
-          payload
-        )
-      );
-
-
-    const response =
-      await fetch(
-        url,
-        {
-          method: "GET",
-          cache: "no-store"
-        }
-      );
-
-
-    const result =
-      await response.json();
-
-
-    if (!result.ok) {
-
-      throw new Error(
-        result.error ||
-        "API error"
-      );
-    }
-
-
-    return result.data;
-
-  } catch (err) {
-
-    throw err;
-
-  }
-
-}
-
-
-/********************************************************
- * REPLACE apiGet WITH apiRequest
- ********************************************************/
-
-apiGet = apiRequest;
-
-
-/********************************************************
- * SCANNER
- ********************************************************/
-
-async function startScanner() {
-
-  if (scannerRunning) {
-
-    return;
-  }
-
-
-  if (
-    !API_URL ||
-    API_URL.includes(
-      "PASTE_YOUR"
-    )
-  ) {
-
-    showToast(
-      "আগে API_URL-এ Apps Script Web App URL দিন"
-    );
-
-    return;
-  }
-
-
-  try {
-
-    currentBarcode = "";
-
-    currentProduct = null;
-
-
-    hideProduct();
-
-
-    document
-      .getElementById(
-        "reader"
-      )
-      .style.display =
-      "block";
-
-
-    document
-      .getElementById(
-        "scanButton"
-      )
-      .style.display =
-      "none";
-
-
-    document
-      .getElementById(
-        "closeCameraButton"
-      )
-      .style.display =
-      "block";
-
-
-    scanner =
-      new Html5Qrcode(
-        "reader"
-      );
-
-
-    const config = {
-
-      fps: 15,
-
-      qrbox: function(
-        viewfinderWidth,
-        viewfinderHeight
-      ) {
-
-        const size =
-          Math.floor(
-            Math.min(
-              viewfinderWidth,
-              viewfinderHeight
-            ) * .72
-          );
-
-        return {
-          width: size,
-          height: size
-        };
-
-      },
-
-      aspectRatio:
-        1.7777778,
-
-      disableFlip: false
-
-    };
-
+  try{
 
     await scanner.start(
 
       {
-        facingMode:
-          "environment"
+        facingMode:"environment"
       },
 
-      config,
+      {
+        fps:15,
 
-      onBarcodeDetected,
+        qrbox:function(
+          viewfinderWidth,
+          viewfinderHeight
+        ){
 
-      function(errorMessage) {
+          const size =
+            Math.min(
+              viewfinderWidth,
+              viewfinderHeight
+            ) * 0.75;
 
-        /*
-         * Normal scanner noise.
-         * এখানে কোনো error দেখানো হবে না।
-         */
+          return {
+            width:size,
+            height:size
+          };
 
-      }
+        },
+
+        formatsToSupport:[
+          Html5QrcodeSupportedFormats.CODE_128,
+          Html5QrcodeSupportedFormats.CODE_39,
+          Html5QrcodeSupportedFormats.EAN_13,
+          Html5QrcodeSupportedFormats.EAN_8,
+          Html5QrcodeSupportedFormats.UPC_A,
+          Html5QrcodeSupportedFormats.UPC_E,
+          Html5QrcodeSupportedFormats.ITF
+        ]
+
+      },
+
+      onScanSuccess,
+
+      ()=>{}
 
     );
 
 
     scannerRunning = true;
 
+    showStatus(
+      "Camera ready. Scan barcode.",
+      "success"
+    );
 
-  } catch (err) {
+
+  }catch(err){
 
     console.error(err);
 
-    showToast(
-      "Camera open হয়নি। Chrome camera permission এবং HTTPS check করুন।"
+    showStatus(
+      "Camera could not be opened. " +
+      err.message,
+      "error"
     );
 
-
-    document
-      .getElementById(
-        "reader"
-      )
-      .style.display =
-      "none";
-
-
-    document
-      .getElementById(
-        "scanButton"
-      )
-      .style.display =
-      "block";
-
-
-    document
-      .getElementById(
-        "closeCameraButton"
-      )
-      .style.display =
-      "none";
+    stopScanner();
 
   }
 
 }
 
 
-/********************************************************
- * BARCODE DETECTED
- ********************************************************/
-
-let processingScan = false;
-
-
-async function onBarcodeDetected(
-  decodedText,
-  decodedResult
-) {
-
-  if (processingScan) {
-
-    return;
-  }
-
-
-  if (!decodedText) {
-
-    return;
-  }
-
-
-  processingScan = true;
-
-
-  try {
-
-    /*
-     * Stop duplicate frames
-     */
-
-    if (scanner) {
-
-      try {
-
-        scanner.pause(
-          true
-        );
-
-      } catch (e) {}
-
-    }
-
-
-    currentBarcode =
-      String(
-        decodedText
-      ).trim();
-
-
-    /*
-     * Find product from local cache first
-     */
-
-    let product =
-      findLocalProduct(
-        currentBarcode
-      );
-
-
-    /*
-     * If not found,
-     * ask server
-     */
-
-    if (!product) {
-
-      try {
-
-        product =
-          await apiGet(
-            "product",
-            {
-              barcode:
-                currentBarcode
-            }
-          );
-
-      } catch (err) {
-
-        console.error(err);
-
-      }
-
-    }
-
-
-    if (!product) {
-
-      showToast(
-        "Product পাওয়া যায়নি: " +
-        currentBarcode
-      );
-
-
-      resumeScanner();
-
-      return;
-    }
-
-
-    currentProduct =
-      product;
-
-
-    showProduct(
-      product
-    );
-
-
-    /*
-     * Default quantity 1
-     */
-
-    document
-      .getElementById(
-        "qtyInput"
-      )
-      .value =
-      "1";
-
-
-    document
-      .getElementById(
-        "qtySection"
-      )
-      .style.display =
-      "block";
-
-
-    setTimeout(
-      function() {
-
-        document
-          .getElementById(
-            "qtyInput"
-          )
-          .focus();
-
-        document
-          .getElementById(
-            "qtyInput"
-          )
-          .select();
-
-      },
-      100
-    );
-
-
-  } catch (err) {
-
-    console.error(err);
-
-    showToast(
-      "Scan processing error"
-    );
-
-    resumeScanner();
-
-  } finally {
-
-    processingScan = false;
-
-  }
-
-}
-
-
-/********************************************************
- * LOCAL PRODUCT FIND
- ********************************************************/
-
-function findLocalProduct(
-  barcode
-) {
-
-  const target =
-    String(
-      barcode
-    ).trim();
-
-
-  return products.find(
-    function(product) {
-
-      return String(
-        product.barcode
-      ).trim() === target;
-
-    }
-  ) || null;
-
-}
-
-
-/********************************************************
- * SHOW PRODUCT
- ********************************************************/
-
-function showProduct(
-  product
-) {
-
-  document
-    .getElementById(
-      "productCard"
-    )
-    .style.display =
-    "block";
-
-
-  document
-    .getElementById(
-      "productTitle"
-    )
-    .textContent =
-    product.description ||
-    "Unknown Product";
-
-
-  document
-    .getElementById(
-      "productCode"
-    )
-    .textContent =
-    "Code: " +
-    (
-      product.productCode ||
-      "-"
-    );
-
-
-  document
-    .getElementById(
-      "barcodeText"
-    )
-    .textContent =
-    "Barcode: " +
-    (
-      product.barcode ||
-      currentBarcode
-    );
-
-}
-
-
-/********************************************************
- * HIDE PRODUCT
- ********************************************************/
-
-function hideProduct() {
-
-  document
-    .getElementById(
-      "productCard"
-    )
-    .style.display =
-    "none";
-
-
-  document
-    .getElementById(
-      "qtySection"
-    )
-    .style.display =
-    "none";
-
-}
-
-
-/********************************************************
- * SAVE COUNT
- ********************************************************/
-
-async function saveCurrentCount() {
-
-  if (saving) {
-
-    return;
-  }
-
-
-  const location =
-    localStorage.getItem(
-      STORAGE.location
-    );
-
-
-  const employee =
-    localStorage.getItem(
-      STORAGE.employee
-    );
-
-
-  const date =
-    localStorage.getItem(
-      STORAGE.date
-    ) || todayKey();
-
-
-  const qty =
-    Number(
-      document
-        .getElementById(
-          "qtyInput"
-        )
-        .value
-    );
-
-
-  if (!location) {
-
-    showToast(
-      "আগে Location select করুন"
-    );
-
-    openSettings();
-
-    return;
-  }
-
-
-  if (!employee) {
-
-    showToast(
-      "আগে Employee select করুন"
-    );
-
-    openSettings();
-
-    return;
-  }
-
-
-  if (
-    !currentBarcode ||
-    !currentProduct
-  ) {
-
-    showToast(
-      "আগে barcode scan করুন"
-    );
-
-    return;
-  }
-
-
-  if (
-    !qty ||
-    qty <= 0
-  ) {
-
-    showToast(
-      "Valid quantity দিন"
-    );
-
-    return;
-  }
-
-
-  const item = {
-
-    clientId:
-      "CLI_" +
-      Date.now() +
-      "_" +
-      Math.random()
-        .toString(36)
-        .substring(2, 9),
-
-    deviceId:
-      getDeviceId(),
-
-    barcode:
-      currentBarcode,
-
-    qty:
-      qty,
-
-    location:
-      location,
-
-    employee:
-      employee,
-
-    date:
-      date,
-
-    createdAt:
-      Date.now()
-
-  };
-
-
-  /*
-   * IMPORTANT:
-   *
-   * প্রথমে phone-এর queue-তে save হবে।
-   * তারপর server-এ পাঠানো হবে।
-   *
-   * তাই network problem হলেও
-   * scan data immediately হারাবে না।
-   */
-
-  addToQueue(
-    item
-  );
-
-
-  /*
-   * UI update immediately
-   */
-
-  const localRecord = {
-
-    recordId:
-      item.clientId,
-
-    timestamp:
-      new Date(),
-
-    date:
-      item.date,
-
-    location:
-      item.location,
-
-    employee:
-      item.employee,
-
-    barcode:
-      item.barcode,
-
-    productCode:
-      currentProduct.productCode,
-
-    description:
-      currentProduct.description,
-
-    price:
-      currentProduct.price,
-
-    qty:
-      item.qty,
-
-    pending:
-      true
-
-  };
-
-
-  records.unshift(
-    localRecord
-  );
-
-
-  renderRecords();
-
-  updateStats();
-
-
-  showToast(
-    "✓ Saved"
-  );
-
-
-  /*
-   * Reset current product
-   */
-
-  currentBarcode = "";
-
-  currentProduct = null;
-
-  hideProduct();
-
-
-  document
-    .getElementById(
-      "qtyInput"
-    )
-    .value =
-    "1";
-
-
-  /*
-   * Camera immediately ready
-   */
-
-  resumeScanner();
-
-
-  /*
-   * Background sync
-   */
-
-  flushQueue();
-
-}
-
-
-/********************************************************
- * ENTER KEY = SAVE
- ********************************************************/
-
-document
-  .getElementById(
-    "qtyInput"
-  )
-  .addEventListener(
-    "keydown",
-    function(event) {
-
-      if (
-        event.key === "Enter"
-      ) {
-
-        event.preventDefault();
-
-        saveCurrentCount();
-
-      }
-
-    }
-  );
-
-
-/********************************************************
- * QUEUE
- ********************************************************/
-
-function getQueue() {
-
-  try {
-
-    return JSON.parse(
-      localStorage.getItem(
-        STORAGE.queue
-      ) || "[]"
-    );
-
-  } catch (e) {
-
-    return [];
-
-  }
-
-}
-
-
-function saveQueue(
-  queue
-) {
-
-  localStorage.setItem(
-    STORAGE.queue,
-    JSON.stringify(
-      queue
-    )
-  );
-
-  updateQueueDisplay();
-
-}
-
-
-function addToQueue(
-  item
-) {
-
-  const queue =
-    getQueue();
-
-  queue.push(
-    item
-  );
-
-  saveQueue(
-    queue
-  );
-
-}
-
-
-/********************************************************
- * FLUSH QUEUE
- ********************************************************/
-
-let syncing = false;
-
-
-async function flushQueue() {
-
-  if (syncing) {
-
-    return;
-  }
-
-
-  if (!navigator.onLine) {
-
-    return;
-  }
-
-
-  const queue =
-    getQueue();
-
-
-  if (!queue.length) {
-
-    return;
-  }
-
-
-  syncing = true;
-
-
-  try {
-
-    while (
-      queue.length &&
-      navigator.onLine
-    ) {
-
-      const item =
-        queue[0];
-
-
-      try {
-
-        const result =
-          await apiGet(
-            "save",
-            item
-          );
-
-
-        if (
-          result &&
-          result.ok !== false
-        ) {
-
-          queue.shift();
-
-          saveQueue(
-            queue
-          );
-
-        }
-        else {
-
-          break;
-        }
-
-
-      } catch (err) {
-
-        console.error(
-          "Sync failed",
-          err
-        );
-
-        break;
-
-      }
-
-    }
-
-
-  } finally {
-
-    syncing = false;
-
-  }
-
-}
-
-
-/********************************************************
- * QUEUE DISPLAY
- ********************************************************/
-
-function updateQueueDisplay() {
-
-  const count =
-    getQueue().length;
-
-
-  const el =
-    document.getElementById(
-      "queueCount"
-    );
-
-
-  if (count > 0) {
-
-    el.style.display =
-      "inline-block";
-
-    el.textContent =
-      count +
-      " pending";
-
-  } else {
-
-    el.style.display =
-      "none";
-
-  }
-
-}
-
-
-/********************************************************
- * LOAD RECORDS
- ********************************************************/
-
-async function loadRecords() {
-
-  try {
-
-    const location =
-      localStorage.getItem(
-        STORAGE.location
-      ) || "";
-
-
-    const employee =
-      localStorage.getItem(
-        STORAGE.employee
-      ) || "";
-
-
-    const date =
-      localStorage.getItem(
-        STORAGE.date
-      ) || todayKey();
-
-
-    const result =
-      await apiGet(
-        "records",
-        {
-          location:
-            location,
-
-          employee:
-            employee,
-
-          date:
-            date
-        }
-      );
-
-
-    records =
-      Array.isArray(result)
-        ? result
-        : [];
-
-
-    /*
-     * Add pending local queue items
-     */
-
-    const queue =
-      getQueue();
-
-
-    queue
-      .filter(
-        function(item) {
-
-          return (
-            item.date === date &&
-            (!location ||
-              item.location === location) &&
-            (!employee ||
-              item.employee === employee)
-          );
-
-        }
-      )
-      .forEach(
-        function(item) {
-
-          const exists =
-            records.some(
-              function(r) {
-
-                return (
-                  r.clientId ===
-                  item.clientId
-                );
-
-              }
-            );
-
-
-          if (!exists) {
-
-            const product =
-              findLocalProduct(
-                item.barcode
-              );
-
-
-            records.unshift({
-
-              recordId:
-                item.clientId,
-
-              clientId:
-                item.clientId,
-
-              timestamp:
-                new Date(
-                  item.createdAt
-                ),
-
-              date:
-                item.date,
-
-              location:
-                item.location,
-
-              employee:
-                item.employee,
-
-              barcode:
-                item.barcode,
-
-              productCode:
-                product
-                  ? product.productCode
-                  : "",
-
-              description:
-                product
-                  ? product.description
-                  : "Pending",
-
-              price:
-                product
-                  ? product.price
-                  : 0,
-
-              qty:
-                item.qty,
-
-              pending:
-                true
-
-            });
-
-          }
-
-        }
-      );
-
-
-    renderRecords();
-
-    updateStats();
-
-
-  } catch (err) {
-
-    console.error(err);
-
-    /*
-     * Server unavailable হলে
-     * local queue দিয়ে UI চালু থাকবে।
-     */
-
-    renderRecords();
-
-    updateStats();
-
-  }
-
-}
-
-
-/********************************************************
- * RENDER RECORDS
- ********************************************************/
-
-function renderRecords() {
-
-  const list =
-    document.getElementById(
-      "recentList"
-    );
-
-
-  document
-    .getElementById(
-      "recentCountNumber"
-    )
-    .textContent =
-    records.length;
-
-
-  if (!records.length) {
-
-    list.innerHTML =
-      '<div class="empty">No counts yet.</div>';
-
-    return;
-  }
-
-
-  list.innerHTML = "";
-
-
-  records
-    .slice(
-      0,
-      50
-    )
-    .forEach(
-      function(record) {
-
-        const item =
-          document.createElement(
-            "div"
-          );
-
-        item.className =
-          "recent-item";
-
-
-        const timestamp =
-          formatTime(
-            record.timestamp
-          );
-
-
-        item.innerHTML = `
-
-          <div class="recent-main">
-
-            <div>
-
-              <div class="recent-name">
-                ${escapeHtml(
-                  record.description ||
-                  "Unknown Product"
-                )}
-              </div>
-
-              <div class="recent-code">
-                ${escapeHtml(
-                  record.productCode ||
-                  record.barcode ||
-                  ""
-                )}
-              </div>
-
-            </div>
-
-
-            <div class="recent-qty">
-              × ${Number(
-                record.qty || 0
-              )}
-            </div>
-
-          </div>
-
-
-          <div class="recent-meta">
-
-            <span>
-              ${escapeHtml(
-                record.barcode ||
-                ""
-              )}
-              •
-              ${timestamp}
-            </span>
-
-
-            <button
-              class="edit-btn"
-              onclick="openEditModal(
-                '${escapeJs(
-                  record.recordId
-                )}'
-              )"
-            >
-              EDIT
-            </button>
-
-          </div>
-
-        `;
-
-
-        list.appendChild(
-          item
-        );
-
-      }
-    );
-
-}
-
-
-/********************************************************
- * UPDATE STATS
- ********************************************************/
-
-function updateStats() {
-
-  let total = 0;
-
-
-  records.forEach(
-    function(r) {
-
-      total +=
-        Number(
-          r.qty
-        ) || 0;
-
-    }
-  );
-
-
-  document
-    .getElementById(
-      "totalQtyDisplay"
-    )
-    .textContent =
-    total.toLocaleString();
-
-}
-
-
-/********************************************************
- * SUMMARY
- ********************************************************/
-
-async function toggleSummary() {
-
-  const panel =
-    document.getElementById(
-      "summaryPanel"
-    );
-
-
-  if (
-    panel.style.display ===
-    "block"
-  ) {
-
-    panel.style.display =
-      "none";
-
-    return;
-  }
-
-
-  try {
-
-    const location =
-      localStorage.getItem(
-        STORAGE.location
-      ) || "";
-
-
-    const employee =
-      localStorage.getItem(
-        STORAGE.employee
-      ) || "";
-
-
-    const date =
-      localStorage.getItem(
-        STORAGE.date
-      ) || todayKey();
-
-
-    const summary =
-      await apiGet(
-        "summary",
-        {
-          location:
-            location,
-
-          employee:
-            employee,
-
-          date:
-            date
-        }
-      );
-
-
-    renderSummary(
-      summary
-    );
-
-
-    panel.style.display =
-      "block";
-
-
-  } catch (err) {
-
-    showToast(
-      "Summary load হয়নি"
-    );
-
-  }
-
-}
-
-
-/********************************************************
- * RENDER SUMMARY
- ********************************************************/
-
-function renderSummary(
-  summary
-) {
-
-  const list =
-    document.getElementById(
-      "summaryList"
-    );
-
-
-  if (
-    !summary ||
-    !summary.length
-  ) {
-
-    list.innerHTML =
-      '<div class="empty">No summary yet.</div>';
-
-    return;
-  }
-
-
-  list.innerHTML = "";
-
-
-  summary.forEach(
-    function(item) {
-
-      const row =
-        document.createElement(
-          "div"
-        );
-
-      row.className =
-        "summary-row";
-
-
-      row.innerHTML = `
-
-        <div>
-
-          <div class="summary-name">
-            ${escapeHtml(
-              item.description ||
-              "Unknown"
-            )}
-          </div>
-
-          <div
-            style="
-              font-size:10px;
-              color:#64748b;
-            "
-          >
-            ${escapeHtml(
-              item.barcode ||
-              item.productCode ||
-              ""
-            )}
-          </div>
-
-        </div>
-
-
-        <div class="summary-qty">
-          ${Number(
-            item.qty || 0
-          )}
-        </div>
-
-      `;
-
-
-      list.appendChild(
-        row
-      );
-
-    }
-  );
-
-}
-
-
-/********************************************************
- * EDIT MODAL
- ********************************************************/
-
-function openEditModal(
-  recordId
-) {
-
-  const record =
-    records.find(
-      function(r) {
-
-        return String(
-          r.recordId
-        ) === String(
-          recordId
-        );
-
-      }
-    );
-
-
-  if (!record) {
-
-    showToast(
-      "Record পাওয়া যায়নি"
-    );
-
-    return;
-  }
-
-
-  editingRecordId =
-    recordId;
-
-
-  document
-    .getElementById(
-      "editProductName"
-    )
-    .textContent =
-    record.description ||
-    record.barcode;
-
-
-  document
-    .getElementById(
-      "editQtyInput"
-    )
-    .value =
-    record.qty;
-
-
-  document
-    .getElementById(
-      "editModal"
-    )
-    .style.display =
-    "flex";
-
-}
-
-
-function closeEditModal() {
-
-  editingRecordId =
-    null;
-
-
-  document
-    .getElementById(
-      "editModal"
-    )
-    .style.display =
-    "none";
-
-}
-
-
-/********************************************************
- * SAVE EDIT
- ********************************************************/
-
-async function saveEdit() {
-
-  if (!editingRecordId) {
-
-    return;
-  }
-
-
-  const qty =
-    Number(
-      document
-        .getElementById(
-          "editQtyInput"
-        )
-        .value
-    );
-
-
-  if (
-    !qty ||
-    qty <= 0
-  ) {
-
-    showToast(
-      "Valid quantity দিন"
-    );
-
-    return;
-  }
-
-
-  const employee =
-    localStorage.getItem(
-      STORAGE.employee
-    ) || "";
-
-
-  const deviceId =
-    getDeviceId();
-
-
-  try {
-
-    showLoading(true);
-
-
-    const result =
-      await apiGet(
-        "edit",
-        {
-          recordId:
-            editingRecordId,
-
-          qty:
-            qty,
-
-          employee:
-            employee,
-
-          deviceId:
-            deviceId
-        }
-      );
-
-
-    showLoading(false);
-
-
-    if (
-      result &&
-      result.ok === false
-    ) {
-
-      throw new Error(
-        result.error ||
-        "Edit failed"
-      );
-
-    }
-
-
-    closeEditModal();
-
-
-    showToast(
-      "✓ Quantity updated"
-    );
-
-
-    await loadRecords();
-
-
-  } catch (err) {
-
-    showLoading(false);
-
-    console.error(err);
-
-    showToast(
-      "Update হয়নি: " +
-      err.message
-    );
-
-  }
-
-}
-
-
-/********************************************************
- * CAMERA RESUME
- ********************************************************/
-
-function resumeScanner() {
-
-  if (
-    scanner &&
-    scannerRunning
-  ) {
-
-    try {
-
-      scanner.resume();
-
-    } catch (e) {}
-
-  }
-
-}
-
-
-/********************************************************
+/****************************************************
  * STOP SCANNER
- ********************************************************/
+ ****************************************************/
 
-async function stopScanner() {
+async function stopScanner(){
 
-  if (!scanner) {
+  if(scanner){
 
-    return;
+    try{
+
+      if(scannerRunning){
+
+        await scanner.stop();
+
+      }
+
+    }catch(e){}
+
+    try{
+
+      await scanner.clear();
+
+    }catch(e){}
+
   }
-
-
-  try {
-
-    await scanner.stop();
-
-  } catch (e) {
-
-    console.error(e);
-
-  }
-
-
-  try {
-
-    scanner.clear();
-
-  } catch (e) {}
-
 
   scanner = null;
 
   scannerRunning = false;
 
 
-  document
-    .getElementById(
-      "reader"
-    )
-    .style.display =
-    "none";
+  document.getElementById(
+    "reader"
+  ).style.display = "none";
 
 
-  document
-    .getElementById(
-      "scanButton"
-    )
-    .style.display =
-    "block";
-
-
-  document
-    .getElementById(
-      "closeCameraButton"
-    )
-    .style.display =
-    "none";
-
-
-  hideProduct();
+  document.getElementById(
+    "closeBtn"
+  ).classList.add("hidden");
 
 }
 
 
-/********************************************************
- * CONNECTION STATUS
- ********************************************************/
+/****************************************************
+ * BARCODE SUCCESS
+ ****************************************************/
 
-function updateConnectionStatus() {
+let lastScannedBarcode = "";
 
-  const online =
-    navigator.onLine;
-
-
-  const dot =
-    document.getElementById(
-      "statusDot"
-    );
+let lastScanTime = 0;
 
 
-  const text =
-    document.getElementById(
-      "statusText"
-    );
+async function onScanSuccess(decodedText){
+
+  const barcode =
+    String(decodedText || "").trim();
 
 
-  if (online) {
+  if(!barcode)
+    return;
 
-    dot.classList.remove(
-      "offline"
-    );
 
-    text.textContent =
-      "Online";
+  const now =
+    Date.now();
 
-  } else {
 
-    dot.classList.add(
-      "offline"
-    );
+  // Prevent double scan
 
-    text.textContent =
-      "Offline - data will sync later";
+  if(
+    barcode === lastScannedBarcode &&
+    now - lastScanTime < 1500
+  ){
+
+    return;
 
   }
 
-}
+
+  lastScannedBarcode = barcode;
+
+  lastScanTime = now;
 
 
-/********************************************************
- * AUTO SYNC
- ********************************************************/
+  await stopScanner();
 
-function startAutoSync() {
 
-  window.addEventListener(
-    "online",
-    function() {
-
-      updateConnectionStatus();
-
-      showToast(
-        "Internet connected - syncing..."
-      );
-
-      flushQueue();
-
-    }
+  showStatus(
+    "Barcode: " + barcode +
+    " — finding product...",
+    "info"
   );
 
 
-  window.addEventListener(
-    "offline",
-    function() {
-
-      updateConnectionStatus();
-
-      showToast(
-        "Offline mode"
-      );
-
-    }
-  );
+  findProduct(barcode);
 
 }
 
 
-/********************************************************
- * LOADING
- ********************************************************/
+/****************************************************
+ * PRODUCT SEARCH
+ ****************************************************/
 
-function showLoading(
-  show
-) {
+async function findProduct(barcode){
 
-  document
-    .getElementById(
-      "loading"
-    )
-    .style.display =
-    show
-      ? "flex"
-      : "none";
-
-}
-
-
-/********************************************************
- * TOAST
- ********************************************************/
-
-let toastTimer;
-
-
-function showToast(
-  message
-) {
-
-  const toast =
-    document.getElementById(
-      "toast"
+  let product =
+    products.find(
+      p =>
+        String(p.barcode).trim() ===
+        String(barcode).trim()
     );
 
 
-  toast.textContent =
-    message;
+  // If local cache doesn't find,
+  // ask server directly.
 
+  if(!product){
 
-  toast.classList.add(
-    "show"
-  );
+    try{
 
-
-  clearTimeout(
-    toastTimer
-  );
-
-
-  toastTimer =
-    setTimeout(
-      function() {
-
-        toast.classList.remove(
-          "show"
+      product =
+        await api(
+          "product",
+          {barcode:barcode}
         );
 
-      },
-      2500
+    }catch(err){
+
+      console.error(err);
+
+    }
+
+  }
+
+
+  if(!product){
+
+    currentProduct = null;
+
+    document.getElementById(
+      "productBox"
+    ).style.display = "none";
+
+    document.getElementById(
+      "qtyBox"
+    ).style.display = "none";
+
+
+    showStatus(
+      "Product not found for barcode: " +
+      barcode,
+      "error"
     );
+
+    return;
+
+  }
+
+
+  currentProduct = product;
+
+
+  document.getElementById(
+    "productName"
+  ).textContent =
+    product.description ||
+    "Unknown Product";
+
+
+  document.getElementById(
+    "productBarcode"
+  ).textContent =
+    product.barcode || barcode;
+
+
+  document.getElementById(
+    "productCode"
+  ).textContent =
+    product.productCode || "-";
+
+
+  document.getElementById(
+    "productPrice"
+  ).textContent =
+    product.price || 0;
+
+
+  document.getElementById(
+    "productBox"
+  ).style.display = "block";
+
+
+  document.getElementById(
+    "qtyBox"
+  ).style.display = "block";
+
+
+  document.getElementById(
+    "qty"
+  ).value = 1;
+
+
+  document.getElementById(
+    "qty"
+  ).focus();
+
+
+  showStatus(
+    "Product found. Enter quantity.",
+    "success"
+  );
 
 }
 
 
-/********************************************************
- * FORMAT TIME
- ********************************************************/
+/****************************************************
+ * SAVE COUNT
+ ****************************************************/
 
-function formatTime(
-  value
-) {
+async function saveCurrentCount(){
 
-  try {
+  if(!currentProduct){
 
-    const date =
-      new Date(
-        value
+    showStatus(
+      "No product selected.",
+      "error"
+    );
+
+    return;
+
+  }
+
+
+  const qty =
+    Number(
+      document.getElementById(
+        "qty"
+      ).value
+    );
+
+
+  if(!qty || qty <= 0){
+
+    showStatus(
+      "Enter a valid quantity.",
+      "error"
+    );
+
+    return;
+
+  }
+
+
+  const payload = {
+
+    barcode:
+      currentProduct.barcode,
+
+    qty:qty,
+
+    location:
+      locationSelect.value,
+
+    employee:
+      employeeSelect.value,
+
+    date:
+      dateInput.value,
+
+    clientId:
+      "CLI-" +
+      Date.now() +
+      "-" +
+      Math.random()
+        .toString(36)
+        .substring(2,8),
+
+    deviceId:
+      getDeviceId()
+
+  };
+
+
+  try{
+
+    showStatus(
+      "Saving...",
+      "info"
+    );
+
+
+    const result =
+      await api(
+        "save",
+        payload
       );
 
 
-    if (
-      isNaN(
-        date.getTime()
-      )
-    ) {
+    if(result && result.ok){
 
-      return "";
+      showStatus(
+        "Saved successfully.",
+        "success"
+      );
+
+
+      currentProduct = null;
+
+
+      document.getElementById(
+        "productBox"
+      ).style.display = "none";
+
+
+      document.getElementById(
+        "qtyBox"
+      ).style.display = "none";
+
+
+      loadRecent();
+
+      // Ready for next scan
+      setTimeout(
+        startScanner,
+        250
+      );
+
+    }else{
+
+      throw new Error(
+        result?.error ||
+        "Save failed"
+      );
 
     }
 
 
-    return date.toLocaleTimeString(
-      [],
-      {
-        hour:
-          "2-digit",
+  }catch(err){
 
-        minute:
-          "2-digit"
-      }
+    console.error(err);
+
+    showStatus(
+      "Save failed: " +
+      err.message,
+      "error"
     );
-
-  } catch (e) {
-
-    return "";
 
   }
 
 }
 
 
-/********************************************************
- * HTML ESCAPE
- ********************************************************/
+/****************************************************
+ * RECENT RECORDS
+ ****************************************************/
 
-function escapeHtml(
-  value
-) {
+async function loadRecent(){
 
-  return String(
-    value ?? ""
-  )
+  if(
+    !locationSelect.value ||
+    !employeeSelect.value
+  ){
+
+    return;
+
+  }
+
+
+  try{
+
+    const records =
+      await api(
+        "records",
+        {
+          date:
+            dateInput.value,
+
+          location:
+            locationSelect.value,
+
+          employee:
+            employeeSelect.value
+        }
+      );
+
+
+    recentRecords =
+      records || [];
+
+
+    renderRecent();
+
+
+  }catch(err){
+
+    console.error(err);
+
+  }
+
+}
+
+
+/****************************************************
+ * RENDER RECENT
+ ****************************************************/
+
+function renderRecent(){
+
+  const box =
+    document.getElementById(
+      "recent"
+    );
+
+
+  if(!recentRecords.length){
+
+    box.innerHTML =
+      '<div class="loading">' +
+      'No counts yet.' +
+      '</div>';
+
+    return;
+
+  }
+
+
+  box.innerHTML =
+    recentRecords
+      .slice(0,20)
+      .map(r=>`
+
+        <div class="recent-item">
+
+          <div class="recent-title">
+            ${escapeHtml(
+              r.description ||
+              "Unknown Product"
+            )}
+          </div>
+
+          <div class="recent-meta">
+            Barcode:
+            ${escapeHtml(r.barcode)}
+          </div>
+
+          <div class="recent-meta">
+            Qty:
+            <strong>${r.qty}</strong>
+          </div>
+
+          <div class="recent-meta">
+            ${escapeHtml(
+              r.employee
+            )}
+            —
+            ${escapeHtml(
+              r.location
+            )}
+          </div>
+
+          <button
+            class="btn-secondary"
+            style="margin-top:7px;padding:9px;"
+            onclick="openEdit(
+              '${escapeAttr(r.recordId)}'
+            )">
+
+            ✏️ EDIT
+
+          </button>
+
+        </div>
+
+      `)
+      .join("");
+
+}
+
+
+/****************************************************
+ * EDIT
+ ****************************************************/
+
+function openEdit(recordId){
+
+  const record =
+    recentRecords.find(
+      r =>
+        r.recordId === recordId
+    );
+
+
+  if(!record)
+    return;
+
+
+  currentEditId =
+    record.recordId;
+
+
+  document.getElementById(
+    "editProduct"
+  ).innerHTML =
+    "<strong>" +
+    escapeHtml(
+      record.description
+    ) +
+    "</strong><br>" +
+    "Barcode: " +
+    escapeHtml(
+      record.barcode
+    );
+
+
+  document.getElementById(
+    "editQty"
+  ).value =
+    record.qty;
+
+
+  document.getElementById(
+    "editModal"
+  ).style.display =
+    "flex";
+
+}
+
+
+function closeEdit(){
+
+  currentEditId = null;
+
+  document.getElementById(
+    "editModal"
+  ).style.display =
+    "none";
+
+}
+
+
+async function saveEdit(){
+
+  if(!currentEditId)
+    return;
+
+
+  const qty =
+    Number(
+      document.getElementById(
+        "editQty"
+      ).value
+    );
+
+
+  if(!qty || qty <= 0){
+
+    showStatus(
+      "Invalid quantity.",
+      "error"
+    );
+
+    return;
+
+  }
+
+
+  try{
+
+    const result =
+      await api(
+        "edit",
+        {
+          recordId:
+            currentEditId,
+
+          qty:qty,
+
+          employee:
+            employeeSelect.value,
+
+          deviceId:
+            getDeviceId()
+        }
+      );
+
+
+    if(!result || !result.ok){
+
+      throw new Error(
+        result?.error ||
+        "Edit failed"
+      );
+
+    }
+
+
+    closeEdit();
+
+
+    showStatus(
+      "Quantity updated.",
+      "success"
+    );
+
+
+    loadRecent();
+
+
+  }catch(err){
+
+    showStatus(
+      "Edit failed: " +
+      err.message,
+      "error"
+    );
+
+  }
+
+}
+
+
+/****************************************************
+ * SUMMARY
+ ****************************************************/
+
+async function loadSummary(){
+
+  if(
+    !locationSelect.value ||
+    !employeeSelect.value
+  ){
+
+    showStatus(
+      "Select Location and Employee first.",
+      "error"
+    );
+
+    return;
+
+  }
+
+
+  try{
+
+    const summary =
+      await api(
+        "summary",
+        {
+          date:
+            dateInput.value,
+
+          location:
+            locationSelect.value,
+
+          employee:
+            employeeSelect.value
+        }
+      );
+
+
+    const list =
+      summary || [];
+
+
+    document.getElementById(
+      "summary"
+    ).classList.remove(
+      "hidden"
+    );
+
+
+    document.getElementById(
+      "totalProducts"
+    ).textContent =
+      list.length;
+
+
+    const total =
+      list.reduce(
+        (sum,r)=>
+          sum +
+          Number(r.qty || 0),
+        0
+      );
+
+
+    document.getElementById(
+      "totalQty"
+    ).textContent =
+      total;
+
+
+    document.getElementById(
+      "summaryList"
+    ).innerHTML =
+      list.map(r=>`
+
+        <div class="recent-item">
+
+          <strong>
+            ${escapeHtml(
+              r.description
+            )}
+          </strong>
+
+          <div class="recent-meta">
+            ${escapeHtml(
+              r.barcode
+            )}
+          </div>
+
+          <div class="recent-meta">
+            Quantity:
+            <strong>
+              ${r.qty}
+            </strong>
+          </div>
+
+        </div>
+
+      `).join("");
+
+
+  }catch(err){
+
+    showStatus(
+      "Summary failed: " +
+      err.message,
+      "error"
+    );
+
+  }
+
+}
+
+
+/****************************************************
+ * SECURITY / HTML
+ ****************************************************/
+
+function escapeHtml(value){
+
+  return String(value ?? "")
     .replace(
       /&/g,
       "&amp;"
@@ -3829,105 +1733,45 @@ function escapeHtml(
 }
 
 
-/********************************************************
- * JS ESCAPE
- ********************************************************/
+function escapeAttr(value){
 
-function escapeJs(
-  value
-) {
-
-  return String(
-    value ?? ""
-  )
-    .replace(
-      /\\/g,
-      "\\\\"
-    )
+  return String(value ?? "")
     .replace(
       /'/g,
       "\\'"
-    )
-    .replace(
-      /"/g,
-      '\\"'
-    )
-    .replace(
-      /\n/g,
-      "\\n"
-    )
-    .replace(
-      /\r/g,
-      "\\r"
     );
 
 }
 
 
-/********************************************************
- * GLOBAL DATE CHANGE
- ********************************************************/
+/****************************************************
+ * ENTER = SAVE
+ ****************************************************/
 
-document
-  .getElementById(
-    "dateInput"
-  )
-  .addEventListener(
-    "change",
-    function() {
+document.getElementById(
+  "qty"
+).addEventListener(
+  "keydown",
+  function(e){
 
-      localStorage.setItem(
-        STORAGE.date,
-        this.value
-      );
+    if(e.key === "Enter"){
+
+      saveCurrentCount();
 
     }
-  );
+
+  }
+);
 
 
-/********************************************************
- * CLOSE MODAL BY BACKDROP
- ********************************************************/
+/****************************************************
+ * START
+ ****************************************************/
 
-document
-  .getElementById(
-    "settingsModal"
-  )
-  .addEventListener(
-    "click",
-    function(e) {
-
-      if (
-        e.target === this
-      ) {
-
-        closeSettings();
-
-      }
-
-    }
-  );
-
-
-document
-  .getElementById(
-    "editModal"
-  )
-  .addEventListener(
-    "click",
-    function(e) {
-
-      if (
-        e.target === this
-      ) {
-
-        closeEditModal();
-
-      }
-
-    }
-  );
-
+window.addEventListener(
+  "load",
+  loadInitialData
+);
 
 </script>
 
